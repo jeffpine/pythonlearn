@@ -1,12 +1,24 @@
 import json
 from time import sleep
 
-try:
-    with open('./turmas.json', 'r') as json_file:
-        turmas = json.load(json_file)
-except FileNotFoundError:
-    turmas = {}
-    print("Arquivo 'turmas.json' não encontrado. Iniciando com turmas vazias")
+# Função para carregar os dados do arquivo JSON
+def carregar_dados():
+    try:
+        with open('./turmas.json', 'r') as json_file:
+            turmas = json.load(json_file)
+    except FileNotFoundError:
+        turmas = {}
+        salvar_dados(turmas)  # Salva um arquivo vazio se não existir
+        print("Arquivo 'turmas.json' não encontrado. Iniciando com turmas vazias.")
+    return turmas
+
+# Função para salvar os dados no arquivo JSON
+def salvar_dados(turmas):
+    with open('./turmas.json', 'w') as json_file:
+        json.dump(turmas, json_file, indent=4)
+    print("Dados salvos em 'turmas.json'.")
+
+turmas = carregar_dados()
 
 def exibir_menu():  # função para exibição do menu
     print("=="*15)
@@ -45,6 +57,7 @@ def cadastrar_aluno():  # função para cadastrar alunos
         turmas[f'turma_{numero_da_turma}'].append(novo_aluno)
         
     print("Aluno cadastrado!")
+    salvar_dados(turmas)  # Salva os dados após cada cadastro
 
 def lista_de_presença():  # função para verificação de presença
     numero_da_turma = input("Digite o número da turma: ")
@@ -77,15 +90,12 @@ def lancar_nota():  # função para lançar nota
                     print("Aluno em recuperação.")
                 else:
                     print("Aluno reprovado.")
+                
+                salvar_dados(turmas)  # Salva os dados após lançar as notas
                 return
         print("Aluno não encontrado.")
     else:
         print("Turma não encontrada.")
-
-def salvar_dados():
-    with open('./turmas.json', 'w') as json_file:
-        json.dump(turmas, json_file, indent=4)
-    print("Dados salvos em 'turmas.json'.")
 
 while True:
     exibir_menu()
@@ -97,7 +107,6 @@ while True:
     elif opcao == "3":
         lancar_nota()
     elif opcao == "4":
-        salvar_dados()
         break
     else:
         print("Opção inválida. Tente novamente.")
