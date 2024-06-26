@@ -1,5 +1,6 @@
 import json
 from time import sleep
+import pandas as pd
 
 # Função para carregar os dados do arquivo JSON
 def carregar_dados():
@@ -27,7 +28,8 @@ def exibir_menu():  # função para exibição do menu
     print("1. Cadastrar aluno")
     print("2. Lista de presença")
     print("3. Lançar nota")
-    print("4. Sair")
+    print("4. Exportar para Excel")
+    print("5. Sair")
     print("=="*15)
 
 def cadastrar_aluno():  # função para cadastrar alunos
@@ -97,6 +99,25 @@ def lancar_nota():  # função para lançar nota
     else:
         print("Turma não encontrada.")
 
+def exportar_para_excel(turmas):
+    lista_turmas = []
+    for turma, alunos in turmas.items():
+        for aluno in alunos:
+            alunos_info = {
+                "Turma": turma,
+                "Nome": aluno["nome"],
+                "Telefone": aluno["telefone"],
+                "AV1": aluno["notas"][0] if len(aluno["notas"]) > 0 else None,
+                "AV2": aluno["notas"][1] if len(aluno["notas"]) > 1 else None,
+                "AV3": aluno["notas"][2] if len(aluno["notas"]) > 2 else None,
+                "Média": sum(aluno["notas"])/len(aluno["notas"]) if aluno["notas"] else None
+            }   
+            lista_turmas.append(alunos_info)
+            
+            df = pd.DataFrame(lista_turmas)
+            df.to_excel('C:\Users\Jeff Pine\OneDrive\Desktop\pythonlearn\sala de aula/turmas.xlsx', index=False)
+            print("Dados exportados para 'turmas.xlsx'.")
+
 while True:
     exibir_menu()
     opcao = input("Escolha uma opção: ")
@@ -107,6 +128,8 @@ while True:
     elif opcao == "3":
         lancar_nota()
     elif opcao == "4":
+        exportar_para_excel(turmas)
+    elif opcao == "5":
         break
     else:
         print("Opção inválida. Tente novamente.")
