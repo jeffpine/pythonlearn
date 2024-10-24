@@ -14,15 +14,15 @@ def mostrar_previsao(dados):
     if dados:
         cidade = dados['name']
         descricao = dados['weather'][0]['description']
-        temperatura = dados['main']['temp']
+        temperatura = dados['main']['temp'] - 273.15
         umidade = dados['main']['humidity']
-        vento = dados['wind']['speed']
+        vento = dados['wind']['speed'] * 3.6
 
         print(f"Previsão do tempo para {cidade}:")
         print(f"Descrição: {descricao}")
-        print(f"Temperatura: {temperatura}°C")
+        print(f"Temperatura: {temperatura:.2f}°C")
         print(f"Umidade: {umidade}%")
-        print(f"Vento: {vento} m/s")
+        print(f"Vento: {vento:.2f} km/h")
     else:
         print("Não foi possível obter a previsão do tempo.")
 
